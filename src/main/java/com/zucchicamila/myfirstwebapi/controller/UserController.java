@@ -1,10 +1,7 @@
 package com.zucchicamila.myfirstwebapi.controller;
 
 import com.zucchicamila.myfirstwebapi.model.User;
-import com.zucchicamila.myfirstwebapi.repository.UserRepository;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import com.zucchicamila.myfirstwebapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,35 +11,36 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
+    private final UserService service;
+
     @Autowired
-    private UserRepository repository;
+    public UserController(UserService service) {
+        this.service = service;
+    }
 
-    @Operation(summary = "Get all users")
     @GetMapping
-    public List<User> getUsers() {
-        return repository.findAll();
+    public List<User> getAllUsers() {
+        return service.findAll();
     }
 
-    @Operation(summary = "Get a user by username")
-    @GetMapping("/{username}")
-    public User getOneUser(@PathVariable("username") String username) {
-        return repository.findByUsername(username);
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable Long id) {
+        return service.findById(id);
     }
 
-    @Operation(summary = "Delete a user by ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "User deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "User not found")
-    })
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable("id") Integer id) {
-        repository.deleteById(id);
-    }
-
-    @Operation(summary = "Create a new user")
     @PostMapping
-    public void postUser(@RequestBody User user) {
-        repository.save(user);
+    public User createUser(@RequestBody User user) {
+        return service.save(user);
+    }
+
+    @PutMapping("/{id}")
+    public User updateUser(@PathVariable Long id, @RequestBody User user) {
+        return service.update(id, user);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        service.deleteById(id);
     }
 
 }
