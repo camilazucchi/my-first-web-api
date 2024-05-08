@@ -1,10 +1,20 @@
 package com.zucchicamila.myfirstwebapi.model;
 
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "users")
 public class User {
 
-    private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String login;
     private String password;
+
+    public User() {
+    }
 
     public User(String login, String password) {
         this.login = login;
@@ -20,11 +30,11 @@ public class User {
                 '}';
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
